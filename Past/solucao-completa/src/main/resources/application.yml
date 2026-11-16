@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: escola
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/escola}
+    username: ${DB_USER:app}
+    password: ${DB_PASSWORD:app123}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate        # o Flyway cria as tabelas; o Hibernate só confere
+  flyway:
+    enabled: true
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS:localhost:29092}
+    consumer:
+      group-id: escola-notificacoes
+      auto-offset-reset: earliest
+    producer:
+      properties:
+        max.block.ms: 2000      # se o Kafka estiver fora, não trava a API
+
+app:
+  kafka:
+    enabled: true
+  jwt:
+    secret: ${JWT_SECRET:troque-esta-chave-em-producao-com-32-bytes-ou-mais-ok}
+    expiration-ms: 3600000      # 1 hora
+  auth:
+    exigir-verificacao-email: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
